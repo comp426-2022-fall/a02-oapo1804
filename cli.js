@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-var moment = require('moment-timezone');
+import moment from 'moment-timezone';
+import fetch from "node-fetch";
 //var fetch = require('node-fetch');
 // how to require node fetch, doesnt support ES6 REQuire syntax
 // more info on -j
@@ -24,15 +25,24 @@ let getOption = (option, fallback) => {
   }
   return result;
 }
+let getIntOption = (option, fallback) => {
+  let result = getOption(option, fallback);
+  return result ? parseInt(result) : undefined;
+}
+let getFloatOption = (option, fallback) => {
+  let result = getOption(option, fallback);
+  return result ? parseFloat(result).toFixed(2) : undefined;
+}
 
 const z = getOption("-z", moment.tz.guess());
-const n = getOption("-n");
-const e = getOption("-e");
-const s = getOption("-s");
-const w = getOption("-w");
-const latitude = n ? n : (s ? -1*s : undefined);
-const longitude = e ? e : (w ? -1*w : undefined);
-const d = getOption("-d", 1);
+const n = getFloatOption("-n");
+const e = getFloatOption("-e");
+const s = getFloatOption("-s");
+const w = getFloatOption("-w");
+
+const latitude = n ? n : (s ? (-1.0*s).toFixed(2) : undefined);
+const longitude = e ? e : (w ? (-1.0*w).toFixed(2) : undefined);
+let d = getIntOption("-d", "1");
 
 let url = "https://api.open-meteo.com/v1/forecast?";
 if(latitude) {
@@ -43,21 +53,36 @@ if(longitude) {
 }
 let today = new Date();
 today.setDate(today.getDate() + Number(d));
-start_date = today.toISOString().split("T")[0];
+const start_date = today.toISOString().split("T")[0];
 url += "start_date=" + start_date + "&";
 url += "end_date=" + start_date + "&";
-url += "timezone=" + z;
+url += "timezone=" + z + "&";
+url += "daily=precipitation_hours&hourly=temperature_2m";
 console.log(url);
 const example = 'https://api.open-meteo.com/v1/forecast?latitude=35.92&longitude=-79.06&hourly=temperature_2m&timezone=America%2FAnchorage&start_date=2022-11-17&end_date=2022-11-17'
 //console.log(latitude + " " + longitude + " " + d)
 
-// const start = async function() {
-//   const response = await fetch(url);
-//   const data = await response.json();
-//   console.log(data);
-// }
+const start = async function() {
+  const response = await fetch(url);
+  const data = await response.json();
+  let galoshes = "";
+  if(data.daily.precipitation_hours[0] === 0) {
+    galoshes = "You will not need your galoshes ";
+  } else {
+    galoshes = "You might need your galoshes ";
+  }
+  if(d === 0) {
+    galoshes += "today.";
+  } else if(d===1) {
+    galoshes += "tomorrow."
+  } else {
+    galoshes += "in " + d + " days.";
+  }
+  console.log(galoshes);
+  console.log(data);
+}
 
-//start();
+start();
 // if(args.includes("-j")) {
 //   // Make a request
 //   const response = await fetch(url);

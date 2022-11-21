@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "a02-oapo1804",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "node cli.js -n 35.92 -w 79.05 -z America/New_York"
   },
   "repository": {
-    "type": "module",
+    "type": "git",
     "url": "git+https://github.com/comp426-2022-fall/a02-oapo1804.git"
   },
   "author": "oapo1804",
