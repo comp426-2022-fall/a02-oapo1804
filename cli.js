@@ -59,9 +59,6 @@ url += "start_date=" + start_date + "&";
 url += "end_date=" + start_date + "&";
 url += "timezone=" + z + "&";
 url += "daily=precipitation_hours&hourly=temperature_2m";
-console.log(url);
-const example = 'https://api.open-meteo.com/v1/forecast?latitude=35.92&longitude=-79.06&hourly=temperature_2m&timezone=America%2FAnchorage&start_date=2022-11-17&end_date=2022-11-17'
-//console.log(latitude + " " + longitude + " " + d)
 
 const start = async function() {
   const response = await fetch(url);
@@ -84,7 +81,13 @@ const start = async function() {
   }
   if (args.includes("-j")) {
     if(data.error) {
-      console.log(data.reason);
+      if(!latitude) {
+        console.log("Latitude must be in range");
+      } else if(!longitude) {
+        console.log("Longitude must be in range");
+      } else {
+        console.log(data.reason);
+      }
     } else {
       console.log(data);
     }
