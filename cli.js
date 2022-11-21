@@ -65,20 +65,22 @@ const example = 'https://api.open-meteo.com/v1/forecast?latitude=35.92&longitude
 const start = async function() {
   const response = await fetch(url);
   const data = await response.json();
-  let galoshes = "";
-  if(data.daily.precipitation_hours[0] === 0) {
-    galoshes = "You will not need your galoshes ";
-  } else {
-    galoshes = "You might need your galoshes ";
+  if(data.daily)  {
+    let galoshes = "";
+    if(data.daily.precipitation_hours[0] === 0) {
+      galoshes = "You will not need your galoshes ";
+    } else {
+      galoshes = "You might need your galoshes ";
+    }
+    if(d === 0) {
+      galoshes += "today.";
+    } else if(d===1) {
+      galoshes += "tomorrow."
+    } else {
+      galoshes += "in " + d + " days.";
+    }
+    console.log(galoshes);
   }
-  if(d === 0) {
-    galoshes += "today.";
-  } else if(d===1) {
-    galoshes += "tomorrow."
-  } else {
-    galoshes += "in " + d + " days.";
-  }
-  console.log(galoshes);
   console.log(data);
 }
 
