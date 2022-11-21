@@ -16,10 +16,7 @@ if (args.includes("-h")) {
     + "\t-j            Echo pretty JSON from open-meteo API and exit.\n")
   process.exit(0);
 }
-if (args.includes("-j")) {
-  console.log("")
-  process.exit(0);
-}
+
 console.log( `Hello World ${args}`)
 let getOption = (option, fallback) => {
   let result = fallback;
@@ -85,7 +82,14 @@ const start = async function() {
     }
     console.log(galoshes);
   }
-  console.log(data);
+  if (args.includes("-j")) {
+    if(data.error) {
+      console.log(data.reason);
+    } else {
+      console.log(data);
+    }
+    process.exit(0);
+  }
 }
 
 start();
